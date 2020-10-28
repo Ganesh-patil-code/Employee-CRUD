@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee CRUD Example</title>
+</head>
+<body>
+	<div align="center">
+		<h1 align="center" style="color: red;">EMPLOYEE CRUD EXAMPLE</h1>
+		<a href="new">Create New Employee</a>
+		<br/>
+		<table border="1" style="padding: inherit;">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>name</th>
+					<th>sal</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="employee :${listemp}">
+					<td th:text="${employee.id}">id</td>
+					<td th:text="${employee.name}">name</td>
+					<td th:text="${employee.sal}">sal</td>
+					<td>
+						<a th:href="@{'/rest/edit/' + ${employee.id}}">Edit</a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+					 	<a th:href="@{'/rest/delete/' + ${employee.id}}">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<h1>
+			<marquee>This app is created by ganesh patil :)</marquee>
+		</h1>
+	</div>
+</body>
+</html>

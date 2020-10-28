@@ -5,7 +5,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.soprasteria.model.Employee;
 import com.soprasteria.service.IEmployeeService;
@@ -27,9 +32,28 @@ public class EmployeeController {
 	@Autowired
 	private IEmployeeService service;
 	
+	@RequestMapping("/welcome")
+	public ModelAndView get()
+	{
+		ModelAndView model=new ModelAndView();
+		List<Employee> listemp=service.getAllEmployee();
+		model.addObject("listemp", listemp);
+		model.setViewName("index");
+		return model;
+	}
 	
+	@RequestMapping("/new")
+	public ModelAndView newEmployee()
+	{
+		ModelAndView model=new ModelAndView();
+		 Employee employee=new Employee();
+		 model.addObject("employee", employee);
+		 model.setViewName("new");
+		 return model;
+		 
+	}
 	
-	@GetMapping("/all")
+	@RequestMapping(value = "/all",method = RequestMethod.GET)
 	public ResponseEntity<?> getAllEmployees()
 	{
 		ResponseEntity<?> resp=null;
@@ -46,10 +70,10 @@ public class EmployeeController {
 		return resp;
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getOneEmp(@PathVariable("id") Integer id){
+	@RequestMapping(value = "/edit/{id}" ,method = RequestMethod.GET)
+	public ResponseEntity<?> getOneEmp(@PathVariable(name = "id") Integer id){
 		ResponseEntity<?> resp=null;
-		try {
+		try {		
 			Optional<Employee> opt=service.getOneEmployee(id);
 			if(opt.isPresent())
 				resp=new ResponseEntity<Employee>(opt.get(),HttpStatus.OK); 
@@ -62,7 +86,7 @@ public class EmployeeController {
 		return resp;
 	}
 	
-	@PutMapping("/update")
+	@RequestMapping(value = "/update",method = RequestMethod.PUT)
 	public ResponseEntity<String> updateEmployee(@RequestBody Employee employee)
 	{
 		ResponseEntity<String> resp=null;
@@ -81,14 +105,15 @@ public class EmployeeController {
 		return resp;
 	}
 	
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteEmp(@PathVariable("id") Integer id){
+	@RequestMapping(value = "/delete/{id}",method = {RequestMethod.DELETE,RequestMethod.GET})
+	public ResponseEntity<String> deleteEmp(@PathVariable Integer id){
 		ResponseEntity<String> resp=null;
 		try {
 			Boolean exist=service.isExist(id);
 			if(exist) {
 				service.deleteEmployee(id);
 				resp=new ResponseEntity<String>("Deleted..",HttpStatus.OK);
+				
 			}
 			else
 			{
@@ -101,12 +126,12 @@ public class EmployeeController {
 		return resp;
 	}
 	
-	@PostMapping("/save")
+	@RequestMapping(value = "/save",method = RequestMethod.POST)
 	public ResponseEntity<String> SaveEmp(@RequestBody Employee employee){
 		ResponseEntity<String> resp=null;
 		try {
 			Integer id=service.SaveEmployee(employee);
-			resp=new ResponseEntity<String>("Saved successfully..",HttpStatus.OK);
+			resp=new ResponseEntity<String>("Saved successfully.."+id,HttpStatus.OK);
 		}catch (Exception e) {
 			resp=new ResponseEntity<String>("Unable to save",HttpStatus.INTERNAL_SERVER_ERROR);
 			e.printStackTrace();

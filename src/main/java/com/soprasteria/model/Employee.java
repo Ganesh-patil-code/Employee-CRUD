@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @AllArgsConstructor
-@XmlRootElement
 @Entity
 @Table(name = "emp")
 public class Employee {
