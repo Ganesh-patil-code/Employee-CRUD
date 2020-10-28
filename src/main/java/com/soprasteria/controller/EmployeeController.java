@@ -47,6 +47,17 @@ public class EmployeeController {
 		 
 	}
 	
+	@RequestMapping("/edit")
+	public ModelAndView editEmployee()
+	{
+		ModelAndView model=new ModelAndView();
+		 Employee employee=new Employee();
+		 model.addObject("employee", employee);
+		 model.setViewName("edit");
+		 return model;
+		 
+	}
+	
 	@RequestMapping(value = "/all",method = RequestMethod.GET)
 	public ResponseEntity<?> getAllEmployees()
 	{
